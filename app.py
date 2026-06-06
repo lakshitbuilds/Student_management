@@ -90,6 +90,9 @@ def add_student():
 
 @app.route("/students")
 def students():
+
+    search = request.args.get("search", "")
+
     conn = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -99,7 +102,16 @@ def students():
 
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM students")
+    if search:
+        cursor.execute(
+            "SELECT * FROM students WHERE name LIKE %s",
+            (f"%{search}%",)
+        )
+
+    else:
+        cursor.execute(
+            "SELECT * FROM students"
+        )
 
     students = cursor.fetchall()
 
@@ -154,7 +166,7 @@ def edit_student(id):
         "SELECT * FROM students WHERE id=%s",
         (id,)
     )
-
+    
     student = cursor.fetchone()
 
     cursor.close()
