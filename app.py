@@ -33,7 +33,6 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-
     conn = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -56,6 +55,37 @@ def home():
         "index.html",
         total_students=total_students
     )
+
+@app.route("/add_student",methods = ["GET","POST"])
+def add_student():
+    if request.method == "POST":
+        id = request.form["id"]
+        name = request.form["name"]
+        age = request.form["age"]
+        course = request.form["course"]
+        email = request.form["email"]
+
+        conn = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="student_db"
+        )
+
+        cursor = conn.cursor()
+
+        query = "INSERT INTO students values (%s,%s,%s,%s,%s)"
+        values = (id,name,age,course,email)
+
+        cursor.execute(query,values)
+        
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return redirect("/students")
+
+    return render_template("add_student.html")
 
 
 @app.route("/students")
@@ -159,36 +189,6 @@ def delete_student(id):
 
     return redirect("/students")
     
-@app.route("/add_student",methods = ["GET","POST"])
-def add_student():
-    if request.method == "POST":
-        id = request.form["id"]
-        name = request.form["name"]
-        age = request.form["age"]
-        course = request.form["course"]
-        email = request.form["email"]
-
-        conn = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="",
-            database="student_db"
-        )
-
-        cursor = conn.cursor()
-
-        query = "INSERT INTO students values (%s,%s,%s,%s,%s)"
-        values = (id,name,age,course,email)
-
-        cursor.execute(query,values)
-        
-        conn.commit()
-        cursor.close()
-        conn.close()
-
-        return redirect("/students")
-
-    return render_template("add_student.html")
 
 
 if __name__ == "__main__":
