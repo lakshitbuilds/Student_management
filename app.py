@@ -33,6 +33,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
+
     conn = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -42,18 +43,27 @@ def home():
 
     cursor = conn.cursor()
 
-    cursor.execute(
-        "SELECT COUNT(*) FROM students"
-    )
-
+    # Total students
+    cursor.execute("SELECT COUNT(*) FROM students")
     total_students = cursor.fetchone()[0]
+
+    # Students per course
+    cursor.execute("""
+        SELECT course, COUNT(*) AS total
+        FROM students
+        GROUP BY course
+        ORDER BY total ASC;
+    """)
+
+    course_data = cursor.fetchall()
 
     cursor.close()
     conn.close()
 
     return render_template(
         "index.html",
-        total_students=total_students
+        total_students=total_students,
+        course_data=course_data
     )
 
 @app.route("/add_student",methods = ["GET","POST"])
