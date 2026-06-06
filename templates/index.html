@@ -1,0 +1,36 @@
+{% extends "base.html" %} {% block title %} Home {% endblock %} {% block content
+%}
+
+<div class="container">
+  <div class="text-center my-5">
+    <h1 class="display-4">Student Management System</h1>
+
+    <p class="lead">Manage Student Records Easily</p>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-md-4">
+      <div class="card shadow text-center">
+        <div class="card-body">
+          <h5 class="card-title">Total Students</h5>
+
+          <h1 class="text-primary">{{ total_students }}</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="my-5" />
+
+  <div class="row justify-content-center g-3">
+    <div class="col-md-3">
+      <a href="/add_student" class="btn btn-primary w-100"> Add Student </a>
+    </div>
+
+    <div class="col-md-3">
+      <a href="/students" class="btn btn-success w-100"> View Students </a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
